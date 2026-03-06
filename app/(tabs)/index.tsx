@@ -1,98 +1,146 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import React, { useState } from "react";
+import {
+  Alert,
+  Button,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const [userName, setUserName] = useState("");
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  const handlePress = () => {
+    if (userName.trim() === "") {
+      Alert.alert("Input Required", "Please enter your name to continue.");
+      return;
+    }
+
+    Alert.alert(
+      "Access Granted",
+      `Hello, ${userName}! Welcome to your new React Native application.`,
+    );
+
+    setUserName("");
+  };
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
+        <View style={styles.card}>
+          <Image
+            source={{
+              uri: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop",
+            }}
+            style={styles.heroImage}
+            resizeMode="cover"
+          />
+
+          <View style={styles.contentContainer}>
+            <Text style={styles.greetingTitle}>Developer Portal</Text>
+            <Text style={styles.subtitle}>
+              Enter your credentials to initialize the system.
+            </Text>
+
+            <View style={styles.inputSection}>
+              <Text style={styles.label}>Full Name</Text>
+
+              <TextInput
+                style={styles.input}
+                placeholder="e.g., Nash"
+                placeholderTextColor="#9ca3af"
+                value={userName}
+                onChangeText={setUserName}
+                autoCorrect={false}
+              />
+            </View>
+
+            <View style={styles.buttonWrapper}>
+              <Button
+                title="Initialize System"
+                color={Platform.OS === "ios" ? "#007AFF" : "#2563eb"}
+                onPress={handlePress}
+              />
+            </View>
+          </View>
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#f3f4f6",
   },
-  stepContainer: {
-    gap: 8,
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    padding: 20,
+  },
+  card: {
+    backgroundColor: "#ffffff",
+    borderRadius: 16,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 5,
+  },
+  heroImage: {
+    width: "100%",
+    height: 180,
+    backgroundColor: "#e5e7eb",
+  },
+  contentContainer: {
+    padding: 24,
+  },
+  greetingTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#111827",
     marginBottom: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  subtitle: {
+    fontSize: 14,
+    color: "#4b5563",
+    marginBottom: 24,
+    lineHeight: 20,
+  },
+  inputSection: {
+    marginBottom: 24,
+  },
+  label: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#374151",
+    marginBottom: 6,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  input: {
+    backgroundColor: "#f9fafb",
+    borderWidth: 1,
+    borderColor: "#d1d5db",
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: "#111827",
+  },
+  buttonWrapper: {
+    marginTop: 8,
+    borderRadius: 8,
+    overflow: "hidden",
   },
 });
